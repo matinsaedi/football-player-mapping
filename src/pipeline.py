@@ -12,6 +12,7 @@ import argparse
 import os
 import shutil
 import tempfile
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Optional, Tuple
@@ -124,6 +125,12 @@ def parse_args() -> argparse.Namespace:
         default=Path("models/model.h5"),
         help="Saved Keras weights",
     )
+    parser.add_argument(
+        "--classifier-backend",
+        choices=("auto", "numpy", "tensorflow"),
+        default="auto",
+        help="Classifier runtime; auto prefers TensorFlow and falls back to NumPy",
+    )
     parser.add_argument("--output", type=Path, help="Optional output MP4")
     parser.add_argument(
         "--output-view",
@@ -155,15 +162,28 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def load_classifier(model_json: Path, model_weights: Path):
-    """Load the original Keras architecture and weights lazily."""
+def load_classifier(model_json: Path, model_weights: Path, backend: str = "auto"):
+    """Load the classifier with TensorFlow or lightweight NumPy inference."""
 
-    from tensorflow.keras.models import model_from_json
+    if backend in ("auto", "tensorflow"):
+        try:
+            from tensorflow.keras.models import model_from_json
 
-    architecture = model_json.read_text(encoding="utf-8")
-    model = model_from_json(architecture)
-    model.load_weights(str(model_weights))
-    return model
+            architecture = model_json.read_text(encoding="utf-8")
+            model = model_from_json(architecture)
+            model.load_weights(str(model_weights))
+            return model
+        except Exception as exc:
+            if backend == "tensorflow":
+                raise
+            warnings.warn(
+                f"TensorFlow classifier unavailable ({exc}); using NumPy inference.",
+                RuntimeWarning,
+            )
+
+    from numpy_classifier import NumpyClassifier
+
+    return NumpyClassifier(model_weights)
 
 
 def _scale_points(
@@ -328,7 +348,11 @@ def run(args: argparse.Namespace) -> int:
 
     model = None
     if not args.detection_only:
-        model = load_classifier(args.model_json, args.model_weights)
+        model = load_classifier(
+            args.model_json,
+            args.model_weights,
+            backend=args.classifier_backend,
+        )
 
     subtractor = cv2.createBackgroundSubtractorKNN()
     writer = None

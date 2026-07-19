@@ -22,6 +22,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
     def test_required_small_artifacts_exist(self):
         expected = [
             ROOT / "assets" / "field-map.png",
+            ROOT / "assets" / "demo.gif",
             ROOT / "assets" / "result-screenshot.png",
             ROOT / "models" / "model.h5",
         ]
@@ -29,6 +30,10 @@ class RepositoryIntegrityTests(unittest.TestCase):
             with self.subTest(path=path.name):
                 self.assertTrue(path.is_file())
                 self.assertGreater(path.stat().st_size, 0)
+
+    def test_demo_is_small_enough_for_a_readme(self):
+        demo = ROOT / "assets" / "demo.gif"
+        self.assertLess(demo.stat().st_size, 10 * 1024 * 1024)
 
 
 if __name__ == "__main__":

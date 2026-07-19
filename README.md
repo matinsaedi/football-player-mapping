@@ -4,9 +4,20 @@ This repository preserves and reorganizes a Spring 2021 undergraduate computer-v
 
 The implementation deliberately combines classical computer vision with a neural network: player detection uses background subtraction and connected components, while a compact CNN performs the three-class classification.
 
+## Demo
+
+![Football player detection, classification, and homography mapping demo](assets/demo.gif)
+
+The animation was regenerated from the preserved 24-second input clip with the cleaned pipeline. Bounding-box and map colors represent red-team players, blue-team players, and referees.
+
+<details>
+<summary>Original 2021 result screenshot</summary>
+
 ![Preserved qualitative result](assets/result-screenshot.png)
 
-> **Archival status:** the original project did not save quantitative metrics or a generated result video. The image above is the preserved qualitative result. The cleaned code adds optional MP4 export while retaining the original methodology.
+</details>
+
+> **Archival status:** the original project did not save quantitative metrics or a generated result video. The screenshot is the preserved qualitative result; the GIF was reproduced from the original model, input clip, and homography using the cleaned code.
 
 ## Pipeline
 
@@ -59,7 +70,7 @@ Its architecture is:
 | Dense + ReLU | 80 |
 | Softmax | 3 |
 
-The network contains approximately 183,799 trainable parameters. The included architecture was produced with Keras 2.3.1 and a TensorFlow backend; `requirements.txt` therefore describes a compatible historical environment rather than the latest TensorFlow release.
+The network contains approximately 183,799 trainable parameters. The included architecture was produced with Keras 2.3.1 and a TensorFlow backend. For inference, the repository includes a lightweight NumPy implementation of the network's convolution, pooling, dense, and softmax operations, so the preserved weights run on current Python versions without legacy TensorFlow.
 
 ## Dataset summary
 
@@ -75,7 +86,7 @@ An additional 5,112 crops were stored in `other*` directories and appear to be u
 ## Repository layout
 
 ```text
-assets/       Field map and preserved result image
+assets/       Field map, regenerated demo GIF, and preserved result image
 data/         Dataset layout and provenance notes; no dataset files
 examples/     Instructions for supplying a local input clip
 experiments/  Historical optional-tracking notebook and notes
@@ -87,7 +98,7 @@ tests/        Lightweight repository-integrity tests
 
 ## Environment
 
-Python 3.8 is recommended for compatibility with the saved model.
+The default inference path works on current Python versions and does not require TensorFlow:
 
 ```bash
 python -m venv .venv
@@ -122,6 +133,8 @@ python src/pipeline.py \
   --detection-only
 ```
 
+The classifier backend defaults to `auto`: TensorFlow is used when available, with a transparent fallback to the bundled NumPy inference implementation. Use `--classifier-backend numpy` to select the lightweight implementation explicitly.
+
 The default homography is specific to the course footage. It should not be expected to align footage from another stadium or camera position.
 
 ## Train the classifier
@@ -132,6 +145,12 @@ Point the training program to a local directory with the layout documented under
 python src/train_classifier.py \
   --data-root path/to/Dataset \
   --epochs 10
+```
+
+Recreating the historical training environment requires Python 3.8 and the separate pinned dependencies:
+
+```bash
+python -m pip install -r requirements-training.txt
 ```
 
 The program saves the model architecture, weights, and a JSON training history. The historical training process used the supplied test split as validation data, so the reported test result is not an independent final evaluation.

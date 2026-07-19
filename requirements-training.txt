@@ -1,0 +1,6 @@
+# Historical environment for recreating the 2021 TensorFlow training process.
+# Python 3.8 is recommended.
+numpy==1.19.5
+opencv-python==4.5.2.54
+tensorflow==2.5.0
+h5py==3.1.0

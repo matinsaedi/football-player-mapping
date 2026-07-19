@@ -1,5 +1,5 @@
-# Historical compatibility environment for the saved Keras 2.3.1 model.
-# Python 3.8 is recommended.
-numpy==1.19.5
-opencv-python==4.5.2.54
-tensorflow==2.5.0
+# Lightweight modern inference environment. TensorFlow is not required.
+numpy>=1.23,<3
+opencv-python>=4.5,<5
+h5py>=3.11,<4
+Pillow>=9,<13
