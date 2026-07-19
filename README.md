@@ -156,4 +156,4 @@ It should be treated as an experiment, not a completed tracker: intermediate fra
 
 The raw match recordings, player crops, and course assignment PDF are intentionally excluded. They may be course-provided or third-party material, and their redistribution rights have not been established. The trained weights and small visual assets are included only to preserve the academic implementation and should be reviewed before public release.
 
-A software license has not yet been selected because the repository author's preferred name and licensing choice still need confirmation.
+The source code is released under the [MIT License](LICENSE). That license does not grant rights to any excluded match footage, course material, or dataset content.
