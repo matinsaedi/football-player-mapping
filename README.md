@@ -8,16 +8,12 @@ The implementation deliberately combines classical computer vision with a neural
 
 ![Football player detection, classification, and homography mapping demo](assets/demo.gif)
 
-The animation was regenerated from the preserved 24-second input clip with the cleaned pipeline. Bounding-box and map colors represent red-team players, blue-team players, and referees.
+The animation was generated from the preserved 24-second input clip with the cleaned pipeline. Bounding-box and map colors represent red-team players, blue-team players, and referees.
 
 <details>
-<summary>Original 2021 result screenshot</summary>
 
 ![Preserved qualitative result](assets/result-screenshot.png)
 
-</details>
-
-> **Archival status:** the original project did not save quantitative metrics or a generated result video. The screenshot is the preserved qualitative result; the GIF was reproduced from the original model, input clip, and homography using the cleaned code.
 
 ## Pipeline
 
