@@ -11,10 +11,6 @@ The implementation deliberately combines classical computer vision with a neural
 The animation was generated from the preserved 24-second input clip with the cleaned pipeline. Bounding-box and map colors represent red-team players, blue-team players, and referees.
 
 
-
-![Preserved qualitative result](assets/result-screenshot.png)
-
-
 ## Pipeline
 
 ```mermaid
